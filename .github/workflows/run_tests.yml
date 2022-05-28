@@ -22,26 +22,23 @@ jobs:
         run: pipx install poetry
 
       - name: Setup Python ${{ matrix.python-version }}
+        id: setup-python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
 
-      - name: Debug env
-        run: |
-          echo $PATH
-          which python
-          which python${{ matrix.python-version }}
+      - name: Check python version
+        run: python --version
 
-      - name: Setup poetry env
-        run: poetry env use ${{ matrix.python-version }}
+      - name: Recreate poetry env with correct python version
+        run: poetry env use python
 
       - name: Install dependencies
         run: poetry install
 
       - name: Run Checks
-        run: |
-          bash scripts/test.sh --ci
+        run: bash scripts/test.sh --ci
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
