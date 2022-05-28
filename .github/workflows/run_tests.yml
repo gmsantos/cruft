@@ -27,10 +27,17 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
 
-      - name: Install dependencies
+      - name: Debug env
         run: |
-          poetry env use "${{ matrix.python-version }}"
-          poetry install
+          echo $PATH
+          which python
+          which python${{ matrix.python-version }}
+
+      - name: Setup poetry env
+        run: poetry env use ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: poetry install
 
       - name: Run Checks
         run: |
